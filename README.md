@@ -40,7 +40,7 @@ printing a green check:
 
 ```console
 verdict    UNDECIDED  threshold 1000 ms
-           no 99.2% upper bound exists at n=40: the sample maximum is one observation, not a bound; ...
+           no 99.3% upper bound exists at n=40: the sample maximum is one observation, not a bound; ...
 (exit 2)
 ```
 

@@ -46,8 +46,8 @@ Threshold 200 ms → FAIL (lower bound 349.1, exit 1).
 
 40 samples, p99 threshold 1000 ms:
 
-- p99 value 350.1, interval 274.9 .. unbounded, reported coverage 99.2%.
-- Verdict UNDECIDED, exit 2: no upper bound exists at n=40.
+- p99 value 350.1, interval 269.2 .. unbounded, reported coverage 99.25%.
+- Verdict UNDECIDED, exit 2: no 99.3% upper bound exists at n=40.
 - The maximum is a 33.1% upper bound at p99 — printed so the reader can see how
   weak the only available bound is.
 
