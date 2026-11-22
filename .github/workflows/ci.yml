@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["22.18", "24"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Test
+        run: npm test
+      - name: Demo
+        run: node scripts/demo.ts
+      - name: Assert verdicts, bounds and error handling
+        run: |
+          node - <<'JS'
+          const { readFileSync } = require('node:fs');
+          const demo = readFileSync('results/demo.txt', 'utf8');
+          const gate = readFileSync('results/gate.txt', 'utf8');
+          if (!gate.includes('all documented exit codes match: true')) throw new Error(gate);
+          if (!demo.includes('verdict    PASS  threshold 500')) throw new Error('missing PASS');
+          if (!demo.includes('verdict    FAIL  threshold 200')) throw new Error('missing FAIL');
+          if (!demo.includes('verdict    UNDECIDED  threshold 1000')) throw new Error('missing UNDECIDED');
+          if (!demo.includes('upper-bound samples   299')) throw new Error('missing sample plan');
+          if (!demo.includes('not a valid merge')) throw new Error('missing merge caveat');
+          console.log('demo assertions passed');
+          JS

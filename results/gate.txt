@@ -1,0 +1,7 @@
+OK   analyze fixtures/checkout-latency.json --threshold 500  expected=0 actual=0
+OK   analyze fixtures/checkout-latency.json --threshold 200  expected=1 actual=1
+OK   analyze fixtures/small-sample.txt --percentile 99 --threshold 1000  expected=2 actual=2
+OK   plan --percentile 99 --confidence 0.95 --rank-fraction 0.02  expected=0 actual=0
+OK   shards fixtures/shards.json --percentile 99  expected=0 actual=0
+
+all documented exit codes match: true

@@ -1,0 +1,32 @@
+{
+  "name": "p99conf",
+  "version": "0.1.0",
+  "description": "Percentile confidence for load tests: distribution-free p99 intervals, sample-size planning and a three-way SLO verdict",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "p99conf": "bin/p99conf.ts"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "node --test test/stats.test.ts test/parse.test.ts test/analyze.test.ts test/plan.test.ts test/shards.test.ts test/cli.test.ts",
+    "demo": "node scripts/demo.ts",
+    "fixtures": "node scripts/make_fixtures.mjs"
+  },
+  "keywords": [
+    "load-testing",
+    "percentile",
+    "p99",
+    "statistics",
+    "slo",
+    "latency"
+  ]
+}

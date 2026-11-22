@@ -1,0 +1,95 @@
+p99conf demo - every command below is a real subprocess run
+
+$ p99conf analyze fixtures/checkout-latency.json --threshold 500
+p99conf - percentile evidence
+
+samples    1200
+range      33.5 .. 498.3 ms
+mean       152.365 ms
+confidence 95%
+
+percentile         value  interval                        coverage
+p50                140.7  136.7 .. 144.6                    95.03%
+p90                240.4  228.7 .. 251.4                    95.17%
+p95                  282  270.3 .. 295.8                    95.33%
+p99                  371  349.1 .. 433.2                    95.94%
+
+verdict    PASS  threshold 500 ms
+           upper 95.9% confidence bound 433.2 is at or below the threshold 500
+exceedance 0 of 1200 samples above the threshold (0.00%, 95% CI 0.00%..0.32%)
+
+resolution with 1200 samples the highest percentile any observation can speak to is p99.9167; above that the sample maximum is the only evidence
+method     order-statistic bounds; no distributional assumption, so wide intervals mean the data is thin, not that the method failed
+(exit 0)
+
+$ p99conf analyze fixtures/checkout-latency.json --threshold 200
+p99conf - percentile evidence
+
+samples    1200
+range      33.5 .. 498.3 ms
+mean       152.365 ms
+confidence 95%
+
+percentile         value  interval                        coverage
+p50                140.7  136.7 .. 144.6                    95.03%
+p90                240.4  228.7 .. 251.4                    95.17%
+p95                  282  270.3 .. 295.8                    95.33%
+p99                  371  349.1 .. 433.2                    95.94%
+
+verdict    FAIL  threshold 200 ms
+           lower 95.9% confidence bound 349.1 is above the threshold 200
+exceedance 231 of 1200 samples above the threshold (19.25%, 95% CI 17.12%..21.58%)
+
+resolution with 1200 samples the highest percentile any observation can speak to is p99.9167; above that the sample maximum is the only evidence
+method     order-statistic bounds; no distributional assumption, so wide intervals mean the data is thin, not that the method failed
+(exit 1)
+
+$ p99conf analyze fixtures/small-sample.txt --percentile 99 --threshold 1000
+p99conf - percentile evidence
+
+samples    40
+range      46.5 .. 350.1 ms
+mean       149.77 ms
+confidence 95%
+
+percentile         value  interval                        coverage
+p50                125.7  111.2 .. 176.2                    96.15%
+p90                255.8  219.7 .. 350.1                    96.97%
+p95                269.2  255.8 .. unbounded                95.20%
+p99                350.1  269.2 .. unbounded                99.25%
+
+verdict    UNDECIDED  threshold 1000 ms
+           no 99.3% upper bound exists at n=40: the sample maximum is one observation, not a bound; the observed value 350.1 cannot settle the question
+exceedance 0 of 40 samples above the threshold (0.00%, 95% CI 0.00%..8.76%)
+
+thin data  the maximum (350.1) is only a 33.1% upper bound at p99
+resolution with 40 samples the highest percentile any observation can speak to is p97.5; above that the sample maximum is the only evidence
+method     order-statistic bounds; no distributional assumption, so wide intervals mean the data is thin, not that the method failed
+(exit 2)
+
+$ p99conf plan --percentile 99 --confidence 0.95 --rank-fraction 0.02
+p99conf - sample-size plan
+
+percentile            p99
+confidence            95%
+upper-bound samples   299
+interval samples      400
+rank window           8 observations (2% of the run)
+
+note  299 samples put at least one observation above the p99 quantile with 95% confidence, so the maximum becomes a valid bound
+note  a 95% interval whose endpoints span at most 2% of the sample ranks needs 400 samples (a 8-observation window)
+note  planning assumes independent, identically distributed samples from one stationary workload
+(exit 0)
+
+$ p99conf shards fixtures/shards.json --percentile 99
+p99conf - merged percentile bounds
+
+shards          1000000 samples total
+largest shard   52.0% of traffic
+merged p99      410 .. 900 ms
+average of p's  588.333 ms  (not a valid merge)
+weighted mean   453.85 ms  (not a valid merge)
+
+note  the merged p99 lies between 410 and 900; the average of shard percentiles (588.333) and the count-weighted mean (453.85) are not bounds and may be outside the true value
+(exit 0)
+
